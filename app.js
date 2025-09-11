@@ -1,7 +1,7 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-const PORT = process.env.PORT || 3000;
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const authRoutes = require("./routes/auth.js");
 
 // Load environment variables
 dotenv.config();
@@ -18,7 +18,11 @@ app.get('/', (req, res) => {
   res.status(200).json({ message: 'Welcome to PawCare API' });
 });
 
+// Auth routes
+app.use('/api/auth', authRoutes);
+
 // Start server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
 });
