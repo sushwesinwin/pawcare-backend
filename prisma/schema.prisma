@@ -27,144 +27,153 @@ enum PostStatus {
 }
 
 // Models
+// model User {
+//   id        String    @id @default(auto()) @map("_id") @db.ObjectId
+//   email     String    @unique @map("_email")
+//   password  String
+//   firstName String
+//   lastName  String
+//   phone     String
+//   address   String
+//   role      UserRole
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   pets      Pet[]     @relation("UserPets")
+//   staff     Staff?    @relation("UserStaff")
+//   posts     Post[]    @relation("UserBlogPosts")
+//   postTags  PostTag[] @relation("UserPostTags")
+// }
+
 model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  email     String    @unique @map("_email")
-  password  String
-  firstName String
-  lastName  String
-  phone     String
-  address   String
-  role      UserRole
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  pets      Pet[]     @relation("UserPets")
-  staff     Staff?    @relation("UserStaff")
-  posts     Post[]    @relation("UserBlogPosts")
-  postTags  PostTag[] @relation("UserPostTags")
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  email    String   @unique
+  password String
+  name     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Pet {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  species        String
-  breed          String
-  age            Int
-  weight         Float
-  medicalNotes   String
-  ownerId        String         @db.ObjectId
-  owner          User           @relation("UserPets", fields: [ownerId], references: [id])
-  appointments    Appointment[]  @relation("PetAppointments")
-  medicalRecords MedicalRecord[] @relation("PetMedicalRecords")
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-}
+// model Pet {
+//   id             String         @id @default(auto()) @map("_id") @db.ObjectId
+//   name           String
+//   species        String
+//   breed          String
+//   age            Int
+//   weight         Float
+//   medicalNotes   String
+//   ownerId        String         @db.ObjectId
+//   owner          User           @relation("UserPets", fields: [ownerId], references: [id])
+//   appointments    Appointment[]  @relation("PetAppointments")
+//   medicalRecords MedicalRecord[] @relation("PetMedicalRecords")
+//   createdAt      DateTime       @default(now())
+//   updatedAt      DateTime       @updatedAt
+// }
 
-model Appointment {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
-  petId          String         @db.ObjectId
-  serviceId      String         @db.ObjectId
-  staffId        String         @db.ObjectId
-  pet            Pet            @relation("PetAppointments", fields: [petId], references: [id])
-  service        Service        @relation("ServiceAppointments", fields: [serviceId], references: [id])
-  staff          Staff          @relation("StaffAppointments", fields: [staffId], references: [id])
-  scheduledAt    DateTime
-  duration       Int
-  status         AppointmentStatus
-  notes          String
-  medicalRecords MedicalRecord[] @relation("AppointmentMedicalRecords")
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-}
+// model Appointment {
+//   id             String         @id @default(auto()) @map("_id") @db.ObjectId
+//   petId          String         @db.ObjectId
+//   serviceId      String         @db.ObjectId
+//   staffId        String         @db.ObjectId
+//   pet            Pet            @relation("PetAppointments", fields: [petId], references: [id])
+//   service        Service        @relation("ServiceAppointments", fields: [serviceId], references: [id])
+//   staff          Staff          @relation("StaffAppointments", fields: [staffId], references: [id])
+//   scheduledAt    DateTime
+//   duration       Int
+//   status         AppointmentStatus
+//   notes          String
+//   medicalRecords MedicalRecord[] @relation("AppointmentMedicalRecords")
+//   createdAt      DateTime       @default(now())
+//   updatedAt      DateTime       @updatedAt
+// }
 
-model Service {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  description  String
-  duration     Int
-  price        Float
-  isActive     Boolean
-  appointments Appointment[] @relation("ServiceAppointments")
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-}
+// model Service {
+//   id           String        @id @default(auto()) @map("_id") @db.ObjectId
+//   name         String
+//   description  String
+//   duration     Int
+//   price        Float
+//   isActive     Boolean
+//   appointments Appointment[] @relation("ServiceAppointments")
+//   createdAt    DateTime      @default(now())
+//   updatedAt    DateTime      @updatedAt
+// }
 
-model Staff {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String         @db.ObjectId @unique
-  user           User           @relation("UserStaff", fields: [userId], references: [id])
-  specialization String
-  schedule       Json[]
-  isActive       Boolean
-  appointments   Appointment[]  @relation("StaffAppointments")
-  medicalRecords MedicalRecord[] @relation("StaffMedicalRecords")
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-}
+// model Staff {
+//   id             String         @id @default(auto()) @map("_id") @db.ObjectId
+//   userId         String         @db.ObjectId @unique
+//   user           User           @relation("UserStaff", fields: [userId], references: [id])
+//   specialization String
+//   schedule       Json[]
+//   isActive       Boolean
+//   appointments   Appointment[]  @relation("StaffAppointments")
+//   medicalRecords MedicalRecord[] @relation("StaffMedicalRecords")
+//   createdAt      DateTime       @default(now())
+//   updatedAt      DateTime       @updatedAt
+// }
 
-model MedicalRecord {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  petId         String   @db.ObjectId
-  appointmentId String   @db.ObjectId
-  vetId         String   @db.ObjectId
-  pet           Pet      @relation("PetMedicalRecords", fields: [petId], references: [id])
-  appointment   Appointment @relation("AppointmentMedicalRecords", fields: [appointmentId], references: [id])
-  vet           Staff    @relation("StaffMedicalRecords", fields: [vetId], references: [id])
-  diagnosis     String
-  treatment     String
-  prescription  String
-  notes         String
-  createdAt     DateTime @default(now())
-}
+// model MedicalRecord {
+//   id            String   @id @default(auto()) @map("_id") @db.ObjectId
+//   petId         String   @db.ObjectId
+//   appointmentId String   @db.ObjectId
+//   vetId         String   @db.ObjectId
+//   pet           Pet      @relation("PetMedicalRecords", fields: [petId], references: [id])
+//   appointment   Appointment @relation("AppointmentMedicalRecords", fields: [appointmentId], references: [id])
+//   vet           Staff    @relation("StaffMedicalRecords", fields: [vetId], references: [id])
+//   diagnosis     String
+//   treatment     String
+//   prescription  String
+//   notes         String
+//   createdAt     DateTime @default(now())
+// }
 
-model Post {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  title         String
-  content       String
-  excerpt       String
-  categoryId    String     @db.ObjectId
-  tagIds        String[]   @db.ObjectId
-  authorId      String     @db.ObjectId
-  category      Category   @relation("BlogPostCategory", fields: [categoryId], references: [id])
-  author        User       @relation("UserBlogPosts", fields: [authorId], references: [id])
-  status        PostStatus
-  featuredImage String?
-  publishedAt   DateTime?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  postTags      PostTag[]  @relation("PostTagRelation")
-}
+// model Post {
+//   id            String     @id @default(auto()) @map("_id") @db.ObjectId
+//   title         String
+//   content       String
+//   excerpt       String
+//   categoryId    String     @db.ObjectId
+//   tagIds        String[]   @db.ObjectId
+//   authorId      String     @db.ObjectId
+//   category      Category   @relation("BlogPostCategory", fields: [categoryId], references: [id])
+//   author        User       @relation("UserBlogPosts", fields: [authorId], references: [id])
+//   status        PostStatus
+//   featuredImage String?
+//   publishedAt   DateTime?
+//   createdAt     DateTime   @default(now())
+//   updatedAt     DateTime   @updatedAt
+//   postTags      PostTag[]  @relation("PostTagRelation")
+// }
 
-model Category {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  slug        String   @unique @map("_slug")
-  description String
-  color       String?
-  isActive    Boolean
-  posts       Post[]   @relation("BlogPostCategory")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
+// model Category {
+//   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+//   name        String
+//   slug        String   @unique @map("_slug")
+//   description String
+//   color       String?
+//   isActive    Boolean
+//   posts       Post[]   @relation("BlogPostCategory")
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
 
-model Tag {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  slug        String     @unique @map("_slug")
-  color       String?
-  isActive    Boolean    @default(true)
-  postTags    PostTag[]  @relation("TagPostRelation")
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
+// model Tag {
+//   id          String     @id @default(auto()) @map("_id") @db.ObjectId
+//   name        String
+//   slug        String     @unique @map("_slug")
+//   color       String?
+//   isActive    Boolean    @default(true)
+//   postTags    PostTag[]  @relation("TagPostRelation")
+//   createdAt   DateTime   @default(now())
+//   updatedAt   DateTime   @updatedAt
+// }
 
-model PostTag {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  postId        String   @db.ObjectId
-  tagId         String   @db.ObjectId
-  post          Post     @relation("PostTagRelation", fields: [postId], references: [id])
-  tag           Tag      @relation("TagPostRelation", fields: [tagId], references: [id])
-  assignedAt    DateTime @default(now())
-  assignedBy    String   @db.ObjectId
-  assignedByUser User    @relation("UserPostTags", fields: [assignedBy], references: [id])
-}
+// model PostTag {
+//   id            String   @id @default(auto()) @map("_id") @db.ObjectId
+//   postId        String   @db.ObjectId
+//   tagId         String   @db.ObjectId
+//   post          Post     @relation("PostTagRelation", fields: [postId], references: [id])
+//   tag           Tag      @relation("TagPostRelation", fields: [tagId], references: [id])
+//   assignedAt    DateTime @default(now())
+//   assignedBy    String   @db.ObjectId
+//   assignedByUser User    @relation("UserPostTags", fields: [assignedBy], references: [id])
+// }
