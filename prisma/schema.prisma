@@ -177,3 +177,41 @@ model User {
 //   assignedBy    String   @db.ObjectId
 //   assignedByUser User    @relation("UserPostTags", fields: [assignedBy], references: [id])
 // }
+
+enum PetType {
+  DOG
+  CAT
+  BIRD
+  FISH
+  REPTILE
+}
+
+enum ProductType {
+  FOOD
+  TREAT
+  TOY
+  ACCESSORY
+}
+
+type ProductImage {
+  url    String
+  alt    String?
+  isMain Boolean? @default(false)
+}
+
+model Product {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  description    String?
+  sku            String        @unique
+  price          Float
+  type           ProductType   @default(FOOD)
+  petType        PetType[]
+  stockQuantity  Int           @default(0)
+  images         ProductImage[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@map("products")
+  @@index([petType])
+}
